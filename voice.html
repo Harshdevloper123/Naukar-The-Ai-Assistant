@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naukar THE AI Assistant</title>
+    <link rel="stylesheet" href="voice.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto Mono", monospace;
+}
+
+body{
+    min-height: 100vh;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(-45deg, #dd8266, #ff70a7, #7623d5, #41a0ee);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+  
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+.main .image-container {
+    padding: 10px;
+}
+
+.main .image-container .image {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main .image-container .image img {
+    width: 350px;
+    align-items: center;
+}
+
+.main .image-container h1 {
+    color: #00bcd4;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 40px;
+}
+
+.main .image-container p {
+    color: #324042;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.main .input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40vw;
+    height: 50px;
+    border-radius: 20px;
+    background: rgb(202 253 255 / 50%);
+    cursor: pointer;
+}
+
+.main .input .talk {
+    background: transparent;
+    outline: none;
+    border: none;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.main .input .talk i {
+    font-size: 20px;
+    color: #aed0d0;
+}
+
+.main .input .content {
+    color: #000000;
+    font-size: 15px;
+    margin-right: 20px;
+}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+</head>
+
+<body>
+    <section class="main">
+        <div class="image-container">
+            <div class="image">
+            </div>
+            <h1>Naukar AI</h1>
+            <p style="color: black;">I m  Naukar AI made by <b>Harsh</b>, How may i help you?</p>
+        </div>
+        <div class="input">
+            <button class="talk"><i class="fas fa-microphone-alt"></i></button>
+            <h1 class="content"> Give command</h1>
+        </div>
+    </section>
+    <script src="voice.js">
+        const btn = document.querySelector('.input');
+const content = document.querySelector('.content');
+
+function speak(text) {
+    const text_speak = new SpeechSynthesisUtterance(text);
+
+    text_speak.rate = 1;
+    text_speak.volume = 1;
+    text_speak.pitch = 1;
+
+    window.speechSynthesis.speak(text_speak);
+}
+
+function wishMe() {
+    var day = new Date();
+    var hour = day.getHours();
+
+    if (hour >= 0 && hour < 12) {
+        speak("Good Morning Boss...");
+    } else if (hour >= 12 && hour < 17) {
+        speak("Good Afternoon Master...");
+    } else {
+        speak("Good Evening Boss ");
+    }
+}
+
+window.addEventListener('load', () => {
+    wishMe();
+    speak("Naukar apki seva me haizar haii");
+
+});
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+recognition.onresult = (event) => {
+    const currentIndex = event.resultIndex;
+    const transcript = event.results[currentIndex][0].transcript;
+    content.textContent = transcript;
+    takeCommand(transcript.toLowerCase());
+};
+
+btn.addEventListener('click', () => {
+    content.textContent = "Listening...";
+    recognition.start();
+});
+
+function takeCommand(message) {
+    if (message.includes('how are you') || message.includes('hello')) {
+        speak("Hello Sir, How May I Help You?");
+    } else if (message.includes('who are you.')) {
+        speak("I am a caht assistant made by HARSH. I CAN PERFORM TASKS LIKE OPEN SOMETHING OR SEARCH ANYTHING.")
+    } else if (message.includes("open google")) {
+        window.open("https://google.com", "_blank");
+        speak("Opening Google...");
+    } else if (message.includes("open youtube")) {
+        window.open("https://youtube.com", "_blank");
+        speak("Opening Youtube...");
+    } else if (message.includes("open facebook")) {
+        window.open("https://facebook.com", "_blank");
+        speak("Opening Facebook...");
+    } else if (message.includes('what is') || message.includes('who is') || message.includes('what are')) {
+        window.open(`https://www.google.com/search?q=${message.replace(" ", "+")}`, "_blank");
+        const finalText = "This is what I found on the internet regarding " + message;
+        speak(finalText);
+    } else if (message.includes('wikipedia')) {
+        window.open(`https://en.wikipedia.org/wiki/${message.replace("wikipedia", "").trim()}`, "_blank");
+        const finalText = "This is what I found on Wikipedia regarding " + message;
+        speak(finalText);
+    } else if (message.includes('time')) {
+        const time = new Date().toLocaleString(undefined, { hour: "numeric", minute: "numeric" });
+        const finalText = "The current time is " + time;
+        speak(finalText);
+    } else if (message.includes('date')) {
+        const date = new Date().toLocaleString(undefined, { month: "short", day: "numeric" });
+        const finalText = "Today's date is " + date;
+        speak(finalText);
+    } else if(message.includes('whatsapp')){
+        window.open('WhatsApp:///');
+    } else if (message.includes('Command') || message.includes('cmd')){
+        window.open('Command prompt:///')
+    } else if (message.includes('calculator')) {
+        window.open('Calculator:///');
+        const finalText = "Opening Calculator";
+        speak(finalText);
+    } else if (message.includes('sing')) {
+        speak("Smooth like butter, like a criminal undercover Gon pop like trouble breaking into your heart like that ooh Cool shade, stunner, yeah, I owe it all to my mother, uh Hot like summer, yeah, I'm making you sweat like that (break it down) Ooh, when I look in the mirror I'll melt your heart into two I got that superstar glow, so  Oohdo the boogie, like A side step, right - left, to my beat High like the moon, rock with me, baby Know that I got that heat Let me show you 'cause talk is cheap Side step, right - left, to my beat Get it, let it roll Smooth like butter, pull you in like no other Don't need no Usher to remind me you got it bad Ain't no other that can sweep you up like a robber Straight up, Igot ya making you fall like thatbreak it down......... sorry if you don't like this ")
+    } else {
+        window.open(`https://www.google.com/search?q=${message.replace(" ", "+")}`, "_blank");
+        const finalText = "I found some information for " + message + " on Google";
+        speak(finalText);
+    }
+
+    
+}
+    </script>
+</body>
+
+</html>
